@@ -1,6 +1,9 @@
+import torch
 from ultralytics import YOLO
 
 # dataset from https://universe.roboflow.com/thesis-physics/basketball-1zkue
+DEVICE = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
+
 def train():
     model = YOLO('yolov8m.pt')
     model.train(
@@ -9,7 +12,7 @@ def train():
         imgsz=640,
         batch=16,
         patience=10,
-        device=0,
+        device=DEVICE,
         project='runs/yolo_weights',
         name='train',
     )
