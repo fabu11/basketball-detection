@@ -16,6 +16,8 @@ def add_bounding_box(f):
     if p is not None:
         cv2.circle(f, p, 6, (0, 0, 255), -1)
 
+    return f
+
 def detect_human_in_frame(f, bottom_percent=0.33, conf_min=0.22):
     """
     takes frame f and returns bounding box for human (with highest confidence)
