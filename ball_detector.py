@@ -19,7 +19,9 @@ def orange_mask(f):
     upper = np.array([20, 255, 255])
 
     mask = cv2.inRange(hsv, lower, upper)
+    # slide 3x3 kernel to first remove any small white pixels
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN,  np.ones((3, 3), np.uint8))
+    # close small black holes in areas of orange (white)
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
     mask = cv2.dilate(mask, np.ones((3,3), np.uint8), iterations=1)
     return mask

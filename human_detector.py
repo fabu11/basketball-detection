@@ -38,7 +38,7 @@ def detect_human_in_frame(f, bottom_percent=0.33, conf_min=0.22):
     # get foot point
     h = valid[valid.conf.argmax()] # highest conf of filtered results
     x1, _, x2, y2 = h.xyxy[0].cpu().numpy()
-    foot_point = (int((x1 + x2) / 2), int(y2))
+    foot_point = (int((x1 + x2) / 2), int(y2)) # the bottom center of the bounding box
     return h, foot_point
 
 
