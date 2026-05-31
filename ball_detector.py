@@ -2,8 +2,11 @@ from utils import display_frame, load_video, display_frames_video
 import cv2
 import numpy as np
 import skimage
-from skimage.transform import hough_circle, hough_circle_peaks 
-from ultralytics import YOLO #pyright: ignore 
+import torch
+from skimage.transform import hough_circle, hough_circle_peaks
+from ultralytics import YOLO #pyright: ignore
+
+DEVICE = 'mps' if torch.backends.mps.is_available() else 'cpu'
 
 trained_model = YOLO("runs/detect/runs/yolo_weights/train/weights/best.pt")
 pretraied_model = YOLO("yolov8l")
@@ -46,7 +49,7 @@ def detect_ball_yolo_trained(f, conf_min=0.01):
     """
     uses yolo trained model to detect the balls pixel location
     """
-    results = trained_model(f, imgsz=1280, conf=conf_min, verbose=False)
+    results = trained_model(f, imgsz=1280, conf=conf_min, verbose=False, device=DEVICE)
     boxes = results[0].boxes
     if(len(boxes) == 0):
         return None, None
@@ -62,7 +65,7 @@ def detect_ball_yolo_base(f, conf_min=0.01):
     """
     uses yolo pretrained model to detect the balls pixel location
     """
-    results = pretraied_model(f, classes=[32], imgsz=1280, conf=conf_min, verbose=False)
+    results = pretraied_model(f, classes=[32], imgsz=1280, conf=conf_min, verbose=False, device=DEVICE)
     boxes = results[0].boxes
     if(len(boxes) == 0):
         return None, None
@@ -74,24 +77,8 @@ def detect_ball_yolo_base(f, conf_min=0.01):
     r = int(max(x2-x1, y2-y1) / 2) # take width of box as 2r
     return (cx, cy, r), None # None is here so that it is the same return type as hough
 
-
-def zero_area(mask, x1, y1, x2, y2, pad):
-    """
-    used to zero out an area that is not of interest.
-    """
-    x1 = max(0, x1 - pad)
-    y1 = max(0, y1 - pad)
-    x2 = min(mask.shape[1], x2 + pad)
-    y2 = min(mask.shape[0], y2 + pad)
-    roi = np.zeros_like(mask)
-    roi[y1:y2, x1:x2] = 255
-    return cv2.bitwise_and(mask, roi)
-
+# for fallback in detect_ball_both 
 last_yolo_bb = None
-
-def reset_ball_state():
-    global last_yolo_bb
-    last_yolo_bb = None
 
 def detect_ball_both(f, conf_min=0.25, fallback_pad_factor=2.0):
     """
@@ -102,7 +89,7 @@ def detect_ball_both(f, conf_min=0.25, fallback_pad_factor=2.0):
     """
     global last_yolo_bb
 
-    results = trained_model(f, imgsz=1280, conf=conf_min, verbose=False)
+    results = trained_model(f, imgsz=1280, conf=conf_min, verbose=False, device=DEVICE)
     boxes = results[0].boxes
     yolo_hit = len(boxes) > 0
 
@@ -171,9 +158,9 @@ def draw_ball_on_frame(f, type="hough"):
     cv2.circle(f, (cx, cy), 2,  (0, 0, 255),  3)    # red center dot
     return f, e
 
-def vconcat_mask_and_ball(f):
+def vconcat_mask_and_ball(f, detectionmethod):
     mask = orange_mask(f)
-    frame_with_ball, e = draw_ball_on_frame(f.copy())
+    frame_with_ball, e = draw_ball_on_frame(f.copy(), type=detectionmethod)
     if(e is None):
         return f
     mask_bgr = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
@@ -182,14 +169,27 @@ def vconcat_mask_and_ball(f):
 
 
 if __name__ == "__main__":
-    filename = "shots/make/3.mov"
-    filename2 = "shots/miss/22.mov"
-    frames = load_video("shots/make/3.mov", display=False)
-    annotated_frames = []
-    for f in frames:
-        #display_frame(vconcat_mask_and_ball(f, h))
-        # f, _ = draw_ball_on_frame(f,  type="trained")
-        # display_frame(f)
-        a_f, _ = draw_ball_on_frame(f, type="trained")
-        annotated_frames.append(a_f)
-    display_frames_video(annotated_frames, name=filename)
+    filename = "shots/make/9.mov"
+    frames = load_video(filename, display=False)
+
+    types = ["hough", "trained", "pretrained", "both"]
+    all_annotated = {}
+    for t in types:
+        all_annotated[t] = [draw_ball_on_frame(f.copy(), type=t)[0] for f in frames]
+
+    import cv2
+    n = len(frames)
+    while True:
+        for i in range(n):
+            for t, annotated in all_annotated.items():
+                cv2.imshow(t, annotated[i])
+            if cv2.waitKey(33) & 0xFF == 27:
+                cv2.destroyAllWindows()
+                break
+        else:
+            continue
+        break
+
+    # h = "hough"
+    # annotated = [vconcat_mask_and_ball(f, h) for f in frames]
+    # display_frames_video(annotated, name=filename, loop=True)
