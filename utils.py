@@ -34,14 +34,19 @@ def display_frame(f):
         if(cv2.waitKey(1) & 0xFF == 27):
             break
 
-def display_frames_video(frames, ms=33, name="video"):
+def display_frames_video(frames, ms=33, name="video", loop=False):
     """
     takes array of frames and plays them as a video
     """
-    for f in frames:
-        cv2.imshow(name, f)
-        if(cv2.waitKey(ms) & 0xFF == 27):
+    while True:
+        for f in frames:
+            cv2.imshow(name, f)
+            if(cv2.waitKey(ms) & 0xFF == 27):
+                cv2.destroyWindow(name)
+                return
+        if not loop:
             break
+    cv2.waitKey(0)
     cv2.destroyWindow(name)
         
 
