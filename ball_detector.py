@@ -169,7 +169,7 @@ def vconcat_mask_and_ball(f, detectionmethod):
 
 
 if __name__ == "__main__":
-    filename = "shots/make/9.mov"
+    filename = "shots/make/14.mov"
     frames = load_video(filename, display=False)
 
     types = ["hough", "trained", "pretrained", "both"]
