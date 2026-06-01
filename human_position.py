@@ -22,7 +22,7 @@ Right corner of the free throw line: 19 ft in front, 19 ft to the left (1463, 76
 Left paint corner at baseline: 0 ft in front, 31 ft to the left (706, 694)
 Right paint corner at baseline: 0 ft in front, 19 ft to the left (1029, 679)
 
-Center of 3 point line: 22 ft 1.75 inches in front, 25 ft to the left (1624, 844)
+Center of 3 point line: 27 ft 4.75 inches in front, 25 ft to the left (1624, 844)
 
 Bottom left block lane marker: 7ft in front, 31 ft to the left (811, 728)
 2nd left lane marker from baseline: 11 ft in front, 31 ft to the left (872, 742)
@@ -67,7 +67,7 @@ court_rw_points = np.array([
     [19, 19], # Right corner of the free throw line
     [0, 31], # Left paint corner at baseline
     [0, 19], # Right paint corner at baseline
-    [22 + 1.75/12, 25], # Center of 3 point line
+    [27 + 4.75/12, 25], # Center of 3 point line
     [7, 31], # Bottom left block lane marker
     [11, 31], # 2nd left lane marker from baseline
     [14 + 2/12, 31], # 3rd left lane marker from baseline
@@ -89,9 +89,15 @@ def pixel_to_court_coords(f, homography):
         return None
     
     human_foot_pos = np.array(human_foot_pos, dtype=np.float32).reshape(-1, 1, 2)
-    
+
     realworld = cv2.perspectiveTransform(human_foot_pos, homography)
     return realworld
+
+def overlay_court_coords_on_frame(f, coords):
+    if coords is not None:
+        x, y = int(coords[0][0][0]), int(coords[0][0][1])
+        cv2.putText(f, f"({x:.1f} ft, {y:.1f} ft)", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
+    return f
 
 def main():
     h = compute_homography(frame_points, court_rw_points)
@@ -100,5 +106,10 @@ def main():
         court_coords = pixel_to_court_coords(f, h)
         if court_coords is not None:
             print(f"Person coordinates in frame {i}: {court_coords}")
+        f = overlay_court_coords_on_frame(f, court_coords)
+        cv2.imshow("court coords", f)
+        if cv2.waitKey(33) & 0xFF == 27:
+            break
 
-main()
+if __name__ == "__main__":
+    main()
