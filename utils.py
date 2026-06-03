@@ -1,4 +1,5 @@
-import cv2 
+import cv2
+import numpy as np
 import os
 
 def load_video(filename, display=True):
@@ -48,6 +49,16 @@ def display_frames_video(frames, ms=33, name="video", loop=False):
             break
     cv2.waitKey(0)
     cv2.destroyWindow(name)
+
+def apply_color_filter(frames, indices, color,):
+    """
+    takes in frames and indices of where to apply color filter and applies color filter there
+    """
+    for idx in indices:
+        overlay = np.full_like(frames[idx], color)
+        for i in range(max(0, idx - 5), min(len(frames), idx + 5)):
+            frames[i] = cv2.addWeighted(frames[i], 0.6, overlay, 0.4, 0)
+    return frames
         
 
 
