@@ -8,7 +8,9 @@
 
 # might be better to do it using homogrpahy - don't ahve to worry about any intrinsics
 '''
-HOMOGRAPHY INFO: relative to right corner seen in frame
+HOMOGRAPHY INFO: ---- relative to right corner seen in frame
+
+-----FOR THE MAKE/MISS FOLDERS0-----
 Center of Free throw line: 19 feet in front, 25 ft to the left (1307, 771)
 
 Right corner of court: 0ft in front, 0 ft to the left (1422, 661)
@@ -33,6 +35,10 @@ Bottom right block lane marker: 7ft in front, 19 ft to the left - cant see in fr
 2nd right lane marker from baseline: 11 ft in front, 19 ft to the left - cant see in frame due to glare
 3rd right lane marker from baseline: 14 ft 2 inches in front, 19 ft to the left (1322, 734)
 4th right lane marker from baseline: 17ft 4 inches in front, 19 ft to the left (1412, 752)
+
+
+-------FOR THE LONGVIDS FOLDER-----
+
 '''
 
 import numpy as np
@@ -40,7 +46,7 @@ import cv2
 from human_detector import detect_human_in_frame
 from utils import load_video
 
-frame_points = np.array([
+smallvids_frame_points = np.array([
     [1307, 771], # Center of Free throw line
     [1422, 661], # Right corner of court
     [121, 727], # Left 3 point line baseline
@@ -100,7 +106,7 @@ def overlay_court_coords_on_frame(f, coords):
     return f
 
 def main():
-    h = compute_homography(frame_points, court_rw_points)
+    h = compute_homography(smallvids_frame_points, court_rw_points)
     frames = load_video("shots/make/16.mov", display=False)
     for i, f in enumerate(frames):
         court_coords = pixel_to_court_coords(f, h)
