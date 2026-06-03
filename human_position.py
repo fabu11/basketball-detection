@@ -142,8 +142,8 @@ def pixel_to_court_coords(f, homography):
 
 def overlay_court_coords_on_frame(f, coords):
     if coords is not None:
-        x, y = int(coords[0][0][0]), int(coords[0][0][1])
-        cv2.putText(f, f"({x:.1f} ft, {y:.1f} ft)", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
+        x, y = (coords[0][0][0]), (coords[0][0][1])
+        cv2.putText(f, f"({x:.3f} ft, {y:.3f} ft)", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
     return f
 
 def main():
