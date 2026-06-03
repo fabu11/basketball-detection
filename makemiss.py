@@ -1,5 +1,5 @@
 from ball_detector import detect_ball_yolo_trained
-from utils import load_video
+from utils import load_video, apply_color_filter
 import os
 
 def makemiss(hoop_pixel_coords: tuple, ball_positions: list):
@@ -11,22 +11,29 @@ def makemiss(hoop_pixel_coords: tuple, ball_positions: list):
     hoop_x, hoop_y = hoop_pixel_coords
 
     make_frames = []
+    miss_frames = []
     for i, ballpos in enumerate(ball_positions):
         if ballpos is not None:
             bx, by = ballpos
+            # if ball x coordinate is within thresh pixels of rim
             if abs(bx - hoop_x) < thresh:
+                # if ball y coordinate is above rim
                 if by < hoop_y:
                     saw_above = True
                     thresh = 20
+                # if we saw ball before AND ball y coordinate is thresh pixels below, count as make
                 elif saw_above and (hoop_y + thresh) < by < (hoop_y + thresh + 150):
                     saw_above = False
                     thresh = 10
                     make_frames.append(i)
-                elif saw_above:
-                    pass
-                    # LIL HARDER SO DO LATER: do we wanna make it show a red or something meaning the ball missed
+                # if we saw ball AND ball y coordinate is more than thresh pixels below, count as miss
+            elif saw_above:
+                if by > (hoop_y + thresh + 150):
+                    saw_above = False
+                    thresh = 10
+                    miss_frames.append(i)
 
-    return make_frames
+    return make_frames, miss_frames
 
 
 # note: old code - prolly not gon work
