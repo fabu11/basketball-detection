@@ -151,16 +151,16 @@ def draw_ball_on_frame(f, type="hough"):
         ball, e = detect_ball_hough(f)
 
     if(ball is None):
-        return f, None
+        return f, None, None
 
     cx, cy, r = ball 
     cv2.circle(f, (cx, cy), r, (0, 165, 255), 2)   # orange outline
     cv2.circle(f, (cx, cy), 2,  (0, 0, 255),  3)    # red center dot
-    return f, e
+    return f, e, (cx, cy)
 
 def vconcat_mask_and_ball(f, detectionmethod):
     mask = orange_mask(f)
-    frame_with_ball, e = draw_ball_on_frame(f.copy(), type=detectionmethod)
+    frame_with_ball, e, ball = draw_ball_on_frame(f.copy(), type=detectionmethod)
     if(e is None):
         return f
     mask_bgr = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
