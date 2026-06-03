@@ -4,7 +4,9 @@ import os
 
 def makemiss(hoop_pixel_coords: tuple, ball_positions: list):
     '''
-    DONT DELETE: COORDS OF HOOP: (971, 377)
+    DONT DELETE: 
+    COORDS OF HOOP IN SMALL VIDS: (971, 377)
+    COORDS OF HOOP IN LONG VIDS: (647, 245)
     '''
     thresh = 10
     saw_above = False
