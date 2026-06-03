@@ -38,7 +38,30 @@ Bottom right block lane marker: 7ft in front, 19 ft to the left - cant see in fr
 
 
 -------FOR THE LONGVIDS FOLDER-----
+Center of Free throw line: 19 feet in front, 25 ft to the left (875, 511)
 
+Right corner of court: 0ft in front, 0 ft to the left (946, 437)
+
+Left 3 point line baseline: 0ft in front, 50ft - 51 inches to the left (80, 477)
+Right 3 point line baseline: 0ft in front, 51 inches to the left (910, 439)
+
+Left corner of free throw line: 19 ft in front, 31 ft to the left (706, 525)
+Right corner of the free throw line: 19 ft in front, 19 ft to the left (972, 501)
+
+Left paint corner at baseline: 0 ft in front, 31 ft to the left (473, 456)
+Right paint corner at baseline: 0 ft in front, 19 ft to the left (684, 448)
+
+Center of 3 point line: 27 ft 4.75 inches in front, 25 ft to the left (1108, 553)
+
+Bottom left block lane marker: 7ft in front, 31 ft to the left (538, 478)
+2nd left lane marker from baseline: 11 ft in front, 31 ft to the left (582, 490)
+3rd left lane marker from baseline: 14 ft 2 inches in front, 31 ft to the left (625, 502)
+4th left lane marker from baseline: 17ft 4 inches in front, 31 ft to the left (675, 516)
+
+Bottom right block lane marker: 7ft in front, 19 ft to the left - cant see in frame due to glare
+2nd right lane marker from baseline: 11 ft in front, 19 ft to the left - cant see in frame due to glare
+3rd right lane marker from baseline: 14 ft 2 inches in front, 19 ft to the left (881, 485)
+4th right lane marker from baseline: 17ft 4 inches in front, 19 ft to the left (942, 496)
 '''
 
 import numpy as np
@@ -62,6 +85,24 @@ smallvids_frame_points = np.array([
     [1009, 784], # 4th left lane marker from baseline
     [1322, 734], # 3rd right lane marker from baseline
     [1412, 752], # 4th right lane marker from baseline
+])
+
+longvids_frame_points = np.array([
+    [875, 511],  # Center of Free throw line
+    [946, 437],  # Right corner of court
+    [80, 477],   # Left 3 point line baseline
+    [910, 439],  # Right 3 point line baseline
+    [706, 525],  # Left corner of free throw line
+    [972, 501],  # Right corner of the free throw line
+    [473, 456],  # Left paint corner at baseline
+    [684, 448],  # Right paint corner at baseline
+    [1108, 553], # Center of 3 point line
+    [538, 478],  # Bottom left block lane marker
+    [582, 490],  # 2nd left lane marker from baseline
+    [625, 502],  # 3rd left lane marker from baseline
+    [675, 516],  # 4th left lane marker from baseline
+    [881, 485],  # 3rd right lane marker from baseline
+    [942, 496],  # 4th right lane marker from baseline
 ])
 
 court_rw_points = np.array([
