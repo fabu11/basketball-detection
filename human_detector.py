@@ -18,7 +18,7 @@ def add_bounding_box(f):
 
     return f
 
-def detect_human_in_frame(f, bottom_percent=0.33, conf_min=0.22):
+def detect_human_in_frame(f, bottom_percent=0.5, conf_min=0.15):
     """
     takes frame f and returns bounding box for human (with highest confidence)
     also returns a point to determine where the feet of person are
@@ -41,6 +41,13 @@ def detect_human_in_frame(f, bottom_percent=0.33, conf_min=0.22):
     h = valid[valid.conf.argmax()] # highest conf of filtered results
     x1, _, x2, y2 = h.xyxy[0].cpu().numpy()
     foot_point = (int((x1 + x2) / 2), int(y2)) # the bottom center of the bounding box
+
+
+
+    # if(add_bb):
+    #     cv2.rectangle(f, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    #     cv2.circle(f, foot_point, 6, (0, 0, 255), -1)
+
     return h, foot_point
 
 

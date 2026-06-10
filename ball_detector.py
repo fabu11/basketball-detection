@@ -6,10 +6,13 @@ import torch
 from skimage.transform import hough_circle, hough_circle_peaks
 from ultralytics import YOLO #pyright: ignore
 
+
 DEVICE = ( "mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu")
 
 trained_model = YOLO("runs/detect/runs/yolo_weights/train/weights/best.pt")
 pretraied_model = YOLO("yolov8l")
+
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 def orange_mask(f):
     """
