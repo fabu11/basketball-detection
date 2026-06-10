@@ -5,9 +5,9 @@ from utils import load_video, display_frames_video, apply_color_filter
 from makemiss import makemiss2
 from shot_chart import collect_shot_points, plot_shot_chart
 
-FOLDER = "basketball-detection-main\\shots\\smallvids"      # put multiple small videos in this folder
+FOLDERS= ["shots/make", "shots/miss"]      # put multiple small videos in this folder
 SMALLVIDS_HOOP = (971, 377)     # hoop pixel location for the small vids
-DISPLAY = True                  # set False to skip watching each clip
+DISPLAY = False                  # set False to skip watching each clip
 
 h = compute_homography(smallvids_frame_points, court_rw_points)
 
@@ -44,6 +44,8 @@ def process_video(path):
     apply_color_filter(annotated, make_frames, (0, 255, 0))
     apply_color_filter(annotated, miss_frames, (0, 0, 255))
 
+
+
     if DISPLAY:
         # plays one video, press escape for next video
         display_frames_video(annotated, name=os.path.basename(path), loop=False)
@@ -55,15 +57,14 @@ def process_video(path):
 all_make_pts = []
 all_miss_pts = []
 
-for name in sorted(os.listdir(FOLDER)):
-    if name.lower().endswith(".mov"):
-        path = os.path.join(FOLDER, name)
-        print(f"processing {path}")
-        mp, xp = process_video(path)
-        all_make_pts.extend(mp)
-        all_miss_pts.extend(xp)
-
-print(f"total makes: {len(all_make_pts)}, total misses: {len(all_miss_pts)}")
+for dir in FOLDERS:
+    for name in sorted(os.listdir(dir)):
+        if name.lower().endswith(".mov"):
+            path = os.path.join(dir, name)
+            print(f"processing {path}")
+            mp, xp = process_video(path)
+            all_make_pts.extend(mp)
+            all_miss_pts.extend(xp)
 
 # one combined shot chart across every clip in the folder
 plot_shot_chart(all_make_pts, all_miss_pts, title="All small vids — shot chart")
